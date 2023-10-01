@@ -15,8 +15,15 @@ const router = express.Router();
 
 const activeConnections: IActiveConnections = {};
 
+const pixels: IIncomingMessage[] = [];
+
 router.ws('/paint', (ws, _) => {
   const id = randomUUID();
+
+  ws.send(JSON.stringify({
+    type: 'ALL_PIXELS',
+    payload: pixels
+  }));
 
   activeConnections[id] = ws;
 
@@ -28,7 +35,7 @@ router.ws('/paint', (ws, _) => {
         Object.keys(activeConnections).forEach((key) => {
           const conn = activeConnections[key];
 
-          if (key !== id) {
+          if (key !== id && messageData.payload) {
             conn.send(JSON.stringify({
               type: 'NEW_PIXELS',
               payload: {
@@ -39,6 +46,9 @@ router.ws('/paint', (ws, _) => {
             }));
           }
         });
+
+        pixels.push(messageData);
+        
         break;
 
       case 'STOP_DRAWING':
@@ -50,6 +60,7 @@ router.ws('/paint', (ws, _) => {
             }));
           }
         });
+        pixels.push(messageData);
         break;
 
       default:

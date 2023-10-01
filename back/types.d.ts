@@ -10,5 +10,5 @@ export interface ICoords {
 }
 export interface IIncomingMessage {
   type: string;
-  payload: ICoords;
+  payload?: ICoords;
 }

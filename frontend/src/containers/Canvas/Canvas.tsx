@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {IIncomingMessage} from "../../types";
+import {IIncomingMessage, IPixels} from "../../types";
 import {COLORS} from "../../constants.ts";
 
 const Canvas = () => {
@@ -34,8 +34,9 @@ const Canvas = () => {
 
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data) as IIncomingMessage;
+      const pixelsArr = JSON.parse(event.data) as IPixels;
 
-      if (data.type === 'NEW_PIXELS') {
+      if (data && data.payload && data.type === 'NEW_PIXELS') {
         context.lineTo(data.payload.x, data.payload.y);
         context.strokeStyle = data.payload.color;
         context.stroke();
@@ -43,6 +44,19 @@ const Canvas = () => {
 
       if(data.type === 'STOP_DRAWING'){
         context.beginPath();
+      }
+
+      if (pixelsArr.type === 'ALL_PIXELS') {
+        pixelsArr.payload.forEach(pixel => {
+          if (pixel.payload) {
+            context.lineTo(pixel.payload.x, pixel.payload.y);
+            context.strokeStyle = pixel.payload.color;
+            context.stroke();
+          }
+          if (!pixel.payload && pixel.type === 'STOP_DRAWING') {
+            context.beginPath();
+          }
+        });
       }
 
     };
