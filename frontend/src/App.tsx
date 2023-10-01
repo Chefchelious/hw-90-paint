@@ -1,11 +1,8 @@
+import Canvas from "./containers/Canvas/Canvas.tsx";
 import './App.css';
 
 const App = () => {
-  return (
-    <div>
-      canvas el
-    </div>
-  );
+  return (<Canvas />);
 };
 
 export default App;
