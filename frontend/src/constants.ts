@@ -1,0 +1,1 @@
+export const COLORS: string[] = ['pink', 'red', 'white', 'green', 'purple'];

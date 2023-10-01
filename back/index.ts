@@ -33,7 +33,8 @@ router.ws('/paint', (ws, _) => {
               type: 'NEW_PIXELS',
               payload: {
                 x: messageData.payload.x,
-                y: messageData.payload.y
+                y: messageData.payload.y,
+                color: messageData.payload.color
               }
             }));
           }
